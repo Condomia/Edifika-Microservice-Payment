@@ -1,7 +1,7 @@
 package com.edifika.payment.payment.domain.model.commands;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 /**
  * Comando para registrar una nueva deuda asociada a una unidad residencial.
@@ -11,7 +11,7 @@ public record CreateDebtCommand(
         String description,
         BigDecimal amount,
         String currency,
-        Date dueDate
+        LocalDate dueDate
 ) {
     public CreateDebtCommand {
         if (unitId == null) throw new IllegalArgumentException("La unidad es obligatoria");

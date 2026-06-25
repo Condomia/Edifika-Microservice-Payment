@@ -1,6 +1,7 @@
 package com.edifika.payment.payment.interfaces.rest.resources;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -12,7 +13,7 @@ public record DebtResource(
         String description,
         BigDecimal amount,
         String currency,
-        Date dueDate,
+        LocalDate dueDate,
         String status
 ) {
 }

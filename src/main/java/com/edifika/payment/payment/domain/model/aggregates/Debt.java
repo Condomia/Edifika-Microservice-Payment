@@ -8,6 +8,7 @@ import com.edifika.payment.shared.domain.model.valueobjects.Money;
 import jakarta.persistence.*;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -29,7 +30,7 @@ public class Debt extends AuditableAbstractAggregateRoot<Debt> {
 
     @Temporal(TemporalType.DATE)
     @Column(nullable = false)
-    private Date dueDate;
+    private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
