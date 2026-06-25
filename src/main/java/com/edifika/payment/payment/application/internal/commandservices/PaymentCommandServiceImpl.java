@@ -11,9 +11,17 @@ import com.edifika.payment.payment.infrastructure.persistence.jpa.repositories.D
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class PaymentCommandServiceImpl implements PaymentCommandService {
+
+    /**
+     * Métodos de pago que se procesan automáticamente contra la pasarela externa.
+     * Cualquier otro método (ej. VOUCHER, MANUAL) queda registrado en estado
+     * REGISTERED, esperando confirmación manual del administrador (US22/US23).
+     */
+    private static final Set<String> GATEWAY_PROCESSED_METHODS = Set.of("CULQI");
 
     private final DebtRepository debtRepository;
     private final PaymentSaga paymentSaga;
@@ -32,6 +40,13 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
     @Override
     public Optional<Payment> registerPayment(RegisterPaymentCommand command, String culqiToken) {
         Payment payment = paymentSaga.registerAttempt(command);
+
+        boolean requiresGateway = GATEWAY_PROCESSED_METHODS.contains(command.paymentMethod().toUpperCase());
+        if (!requiresGateway) {
+            // Pago con voucher/manual: queda en REGISTERED, en espera de revisión administrativa.
+            return Optional.of(payment);
+        }
+
         Payment processed = paymentSaga.processWithGateway(
                 payment.getId(), culqiToken, command.amount(), command.currency()
         );

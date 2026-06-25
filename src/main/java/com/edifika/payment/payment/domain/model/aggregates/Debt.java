@@ -52,7 +52,7 @@ public class Debt extends AuditableAbstractAggregateRoot<Debt> {
      */
     public void markAsPaid() {
         if (this.status == DebtStatus.PAID) {
-            throw new IllegalStateException("La deuda ya se encuentra pagada");
+            return; // Idempotente: ya está pagada, no hay nada que hacer.
         }
         this.status = DebtStatus.PAID;
         this.addDomainEvent(new DebtPaidEvent(this.getId(), this.unitId));
